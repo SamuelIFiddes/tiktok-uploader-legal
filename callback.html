@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Uploader Login</title>
+<style>
+:root{color-scheme:light dark;--bg:#fff;--fg:#111;--muted:#666;--box:#f2f2f2;--accent:#fe2c55}
+@media (prefers-color-scheme:dark){:root{--bg:#111;--fg:#eee;--muted:#999;--box:#222}}
+body{background:var(--bg);color:var(--fg);font-family:system-ui,sans-serif;max-width:640px;margin:40px auto;padding:0 16px;line-height:1.5}
+h1{font-size:1.4rem}
+.box{background:var(--box);padding:12px;border-radius:8px;word-break:break-all;font-family:ui-monospace,monospace;font-size:.9rem}
+button{margin-top:12px;background:var(--accent);color:#fff;border:0;border-radius:8px;padding:10px 18px;font-size:1rem;cursor:pointer}
+p.muted{color:var(--muted);font-size:.9rem}
+</style>
+</head>
+<body>
+<h1 id="title">Samuel Fiddes Uploader</h1>
+<div id="out"></div>
+<script>
+(function(){
+  var q = new URLSearchParams(location.search);
+  var out = document.getElementById('out');
+  function el(tag, cls, text){ var e=document.createElement(tag); if(cls) e.className=cls; if(text) e.textContent=text; return e; }
+  if (q.get('error')) {
+    out.appendChild(el('p', '', 'Login failed: ' + q.get('error') + (q.get('error_description') ? ' – ' + q.get('error_description') : '')));
+    return;
+  }
+  var code = q.get('code');
+  if (!code) { out.appendChild(el('p', '', 'No authorization code found. Start the login from the uploader script.')); return; }
+  var full = location.href;
+  out.appendChild(el('p', '', 'Login successful. Copy this and paste it into the uploader script:'));
+  var box = el('div', 'box', full); out.appendChild(box);
+  var btn = el('button', '', 'Copy'); out.appendChild(btn);
+  btn.onclick = function(){
+    navigator.clipboard.writeText(full).then(function(){ btn.textContent='Copied ✓'; }, function(){ btn.textContent='Select the text and copy manually'; });
+  };
+  out.appendChild(el('p', 'muted', 'The code is only shown here in your browser and is not sent anywhere. It expires within a few minutes.'));
+})();
+</script>
+</body>
+</html>
